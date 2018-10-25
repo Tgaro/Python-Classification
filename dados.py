@@ -31,29 +31,25 @@ def retornaDados():
 	dataframe = pd.read_csv(url, header=None)
 	#Renomeia as colunas
 	renomeiaColunas(dataframe)
-	#Separa somente atributos
-	subdfX = dataframe.drop(columns=['Class'])
-	#Separa somente marcação
-	subdfY = dataframe.loc[:,'Class']
+
 
 	for i in range(0, 10):
-		atrTreino, atrTeste = splitter(subdfX, test_size = 0.2)
-		marcTreino, marcTeste = splitter(subdfY, test_size = 0.2)
+		treino, teste = splitter(dataframe, test_size = 0.2)
 		
+		#Seleciona somente colunas que serão usadas como atributo
+		atrTreino = treino[['Alcohol','Malic acid','Ash','Alcalinity of ash','Magnesium']]
+		atrTeste = teste[['Alcohol','Malic acid','Ash','Alcalinity of ash','Magnesium']]
+		#Separa somente coluna de marcação
+		marcTreino = treino.loc[:,'Class']
+		marcTeste = teste.loc[:,'Class']
+
 		#normalizacao dos dados
 		atrTreino_norm = (atrTreino - atrTreino.mean())/atrTreino.std()
 		atrTeste_norm = (atrTeste - atrTreino.mean())/atrTreino.std()
-		marcTreino_norm = (marcTreino - marcTreino.mean())/marcTreino.std()
-		marcTeste_norm = (marcTeste - marcTreino.mean())/marcTreino.std()
 
-		yTreino.append(marcTreino_norm)
-		yTeste.append(marcTeste_norm)
-		xTreino.append(atrTreino_norm)
-		xTeste.append(atrTeste_norm)
-		'''
 		yTreino.append(marcTreino)
 		yTeste.append(marcTeste)
-		xTreino.append(atrTreino)
-		xTeste.append(atrTeste)
-		'''
+		xTreino.append(atrTreino_norm)
+		xTeste.append(atrTeste_norm)
+
 	return xTreino, xTeste, yTreino, yTeste 
