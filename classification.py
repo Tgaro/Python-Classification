@@ -1,6 +1,9 @@
+#Script para classificação de dados de vinho com kNN e MLP
+''' Tiago Aro'''
+
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
-from dados import retornaDados
+from dados import retornaDadosNormalizados
 
 
 #Declara bases de treino e teste para atributos e marcações
@@ -9,10 +12,10 @@ xTeste = []
 yTreino = []
 yTeste = []
 #retorna bases de treino e teste
-xTreino, xTeste, yTreino, yTeste = retornaDados()
+xTreino, xTeste, yTreino, yTeste = retornaDadosNormalizados()
 
 def classificacaoKNN():
-
+	resultado = []
 	for k in [3, 5, 9]:
 		acerto = 0
 		#Instância kNN
@@ -27,11 +30,13 @@ def classificacaoKNN():
 				if res == 0:
 					acerto = acerto + 1
 		#Armazena resultado da classificação
-		resultado = "K: " + str(k) + " | Media acertos: " + str(((acerto/(len(yTeste[0]) * len(yTeste))) * 100))
+		resultado.append( "K: " + str(k) + " | Media acertos: " + str(round((acerto/(len(yTeste[0]) * len(yTeste))) * 100, 2)) + " %")
 	print("Classificacao kNN: ")
 	print(resultado)
 
 def classificacaoMLP():
+	resultado = []
+	quantidadeEntradas = len(xTeste[0].columns)
 	#Parâmetros do MLP
 	activation = 'logistic' 
 	solver = 'sgd' 
@@ -41,8 +46,8 @@ def classificacaoMLP():
 
 	for k in [1, 2, 3, 4]:
 		acerto = 0
-		# Tamanhos das camadas ocultas
-		hidden_layer_sizes = [k]
+		# Tamanhos das camadas ocultas multiplicado pela quantidade de entradas
+		hidden_layer_sizes = [k * quantidadeEntradas]
 		mlp = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes, activation=activation, solver=solver, 
 						learning_rate_init=learning_rate, batch_size=batch_size, max_iter=max_iter)
 
@@ -56,7 +61,7 @@ def classificacaoMLP():
 				if res == 0:
 					acerto = acerto + 1
 		#Armazena resultado da classificação
-		resultado = "K: " + str(k) + " | Media acertos: " + str(((acerto/(len(yTeste[0]) * len(yTeste))) * 100))
+		resultado.append("K: " + str(k * quantidadeEntradas) + " | Media acertos: " + str(round((acerto/(len(yTeste[0]) * len(yTeste))) * 100, 2)) + " %")
 	print("Classificacao MLP:")
 	print(resultado)
 

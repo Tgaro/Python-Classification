@@ -1,3 +1,7 @@
+#Script para realizar a coleta dos dados e normalização
+''' Tiago Aro'''
+
+
 from sklearn.model_selection import train_test_split as splitter
 import pandas as pd
 
@@ -24,7 +28,7 @@ def renomeiaColunas(dataframe):
  	13:'Proline'
 	}, inplace = True)
 
-def retornaDados():
+def retornaDadosNormalizados():
 	#Define URL do dataframe
 	url = "http://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data"
 	#Lê o arquivo para dentro de um dataframe
@@ -34,6 +38,7 @@ def retornaDados():
 
 
 	for i in range(0, 10):
+		#Separa 80% para treino e 20% para teste
 		treino, teste = splitter(dataframe, test_size = 0.2)
 		
 		#Seleciona somente colunas que serão usadas como atributo
@@ -46,7 +51,7 @@ def retornaDados():
 		#normalizacao dos dados
 		atrTreino_norm = (atrTreino - atrTreino.mean())/atrTreino.std()
 		atrTeste_norm = (atrTeste - atrTreino.mean())/atrTreino.std()
-
+		#carrega listas
 		yTreino.append(marcTreino)
 		yTeste.append(marcTeste)
 		xTreino.append(atrTreino_norm)
